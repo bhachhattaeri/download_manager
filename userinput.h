@@ -5,6 +5,16 @@
 #include <assert.h>
 #include <ctype.h>
 
+void storeCustomDestination(char* line);
+
+void loadURL(char* line);
+
+int checkHeading(char* line, int* category);
+
+int setOptions();
+
+void initialize();
+
 void update();
 
 void download(char* fileURL);
@@ -16,6 +26,8 @@ void cleanLine(char* line);
 void run_program(char* flag, char* argument);
 
 void print_help();
+
+void err_opening_config_file();
 
 void err_file_not_found();
 
