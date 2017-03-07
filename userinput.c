@@ -6,6 +6,7 @@
 static char** fileTypes;
 static char** directories;
 static char** urls;
+static char** lastModified;
 static int numberOfUrls = 0;
 static int maximumNumberOfUrls = INITIAL_URL_SIZE;
 
@@ -21,7 +22,7 @@ int main(int argc, char** argv) {
   while(counter < argc) {
     if(strcmp(argv[counter], "-c")==0) { // if custom
       if(setOptions()==-1) { //error finding config file
-        return;
+        exit(1);
       }
       break;
     }
@@ -54,7 +55,8 @@ void initialize() {
   fileTypes[3] = "default";
   directories[3] = "Downloads/Default/";
 
-  url = malloc(sizeof(char*) * INITIAL_URL_SIZE);
+  urls = malloc(sizeof(char*) * INITIAL_URL_SIZE);
+  lastModified = malloc(sizeof(char*) * INITIAL_URL_SIZE);
 }
 
 int setOptions() {
@@ -66,7 +68,7 @@ int setOptions() {
   }
 
   char* line = NULL;
-  int len;
+  size_t len;
 
   int category = 0;
   while(getline(&line, &len, file) != -1) {
@@ -109,11 +111,14 @@ void storeCustomDestinations(char* line) {
 
 void loadURL(char* line) {
   if(numberOfUrls < maximumNumberOfUrls) {
-    urls[numberOfUrls] = strdup(line);
+    char* copy = strdup(line);
+    urls[numberOfUrls] = strtok(copy, "|");
+    lastModified[numberOfUrls] = strtok(NULL, "|");
     numberOfUrls++;
   } else {
     maximumNumberOfUrls *= 2;
     urls = realloc(urls, maximumNumberOfUrls);
+    lastModified = realloc(lastModified, maximumNumberOfUrls);
   }
 }
 
@@ -128,12 +133,14 @@ int checkHeading(char* line, int* category) {
   return 0;
 }
 
-void download() {
+void download(char* url) {
   // networking program
 }
 
 void update() {
-
+  for(int i = 0; i < numberOfUrls; i++) {
+    download(urls[i]);
+  }
 }
 
 void run_program(char* flag, char* argument) {

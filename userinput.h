@@ -5,7 +5,7 @@
 #include <assert.h>
 #include <ctype.h>
 
-void storeCustomDestination(char* line);
+void storeCustomDestinations(char* line);
 
 void loadURL(char* line);
 
