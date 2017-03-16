@@ -1,13 +1,3 @@
-#include <unistd.h>
-#include <string.h>
-#include <magic.h>
-#include <stdio.h>
-#include <sys/stat.h> 
-#include <fcntl.h>
-#include <sys/types.h>
-#include <dirent.h>
-#include <curl/curl.h>
-#include <stdlib.h>
 
 
 void download(char * dir, char * url){
@@ -22,9 +12,10 @@ void download(char * dir, char * url){
    		curl_easy_perform(c);
 
 		curl_easy_cleanup(c);
-	}else fprintf(stderr,"Oops...Something went wrong. Please try again.\n");
+	}else perror(stderr,"Oops...Something went wrong. Please try again.\n");
 	fclose(f);
 }
+<<<<<<< HEAD
 int main(int argc, char *argv[]){
 	download(argv[1],argv[2]);
 	/*
@@ -73,3 +64,5 @@ int main(int argc, char *argv[]){
 	}*/
 	  return 0;
 }
+=======
+>>>>>>> 214e40867cafa0c755663050df0514f5592c7b53
