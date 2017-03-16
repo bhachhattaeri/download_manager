@@ -80,8 +80,11 @@ void check_for_updates(char * url, long prev_mod, char * download_dir){
       if(CURLE_OK == curl_success) {
         printf("Modification time %s",ctime(&time));				/* prints out time in readable format */
       }
-      if(prev_mod<time)
-      	download(download_dir, url);							// the file has been updated since, so download new copy
+      if(prev_mod<time){
+      	download_obj obj;
+      	obj.url = strdup(url);
+      	obj.dir = strdup(download_dir);
+      	download(download_dir, (void*)&url);						// the file has been updated since, so download new copy
    	}else{
    		perror("Ummm....something went wrong. Please try again.\n");
    		exit(EXIT_FAILURE);
