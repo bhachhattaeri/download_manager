@@ -157,7 +157,7 @@ int checkHeading(char* line, int* category) {
   if(strcmp(line, "#CUSTOM") == 0) {
     *category = 1;
     return 1;
-  } else if(strcmp(line, "#DEFAULT") == 0) {
+  } else if(strcmp(line, "#URLS")==0) {
     *category = 2;
     return 1;
   }
