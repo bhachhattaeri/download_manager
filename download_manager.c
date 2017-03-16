@@ -1,17 +1,93 @@
+#include "download_manager.h"
 
 
-void download(char * dir, char * url){
+typedef struct download_obj{
+	char * url;
+	char * dir;
+}download_obj;
+
+/* Accepts a download_obj type, which consists of
+*  an url and a download directory.
+*  If download is successfully performed, returns (void*)1
+*  else it will return (void*)-1 
+*/
+void download(void * obj){
+	download_obj * file = (download_obj*)obj;
+	char * dir = file->dir;
+	char * url = file->url;
 	CURL * c;
  	curl_global_init(CURL_GLOBAL_DEFAULT);		//sets up the required environment variables
   	c = curl_easy_init();		
-  	FILE * f = fopen(dir, "w+");
+  	FILE * download_dir = fopen(dir, "w+");
+  	CURLcode success;
+  	int exit_succ = 0;
    	if(c){
    		curl_easy_setopt(c, CURLOPT_URL, url);			// uses the url to retrieve info
    		curl_easy_setopt(c, CURLOPT_VERBOSE, 1);		// provides meaningful message to the user
-   		curl_easy_setopt(c, CURLOPT_WRITEDATA, f);		// stored the retrieved file in that location
-   		curl_easy_perform(c);
-
+   		curl_easy_setopt(c, CURLOPT_WRITEDATA, download_dir);		// stored the retrieved file in that location
+   		success = curl_easy_perform(c);
+   		if(success == CURLE_OK){
+   			double total_time = 0
+   			success = curl_easy_getinfo(curl, CURLINFO_TOTAL_TIME, total_time);		// retrieves the information
+   			if(success = CURLE_OK){
+   				int minutes = (total_time/60);
+   				int seconds = total_time % 60;
+   				printf("Total time: %d:%d\n",minutes,seconds);
+   			}
+   			exit_succ = 1;
+   		}else{
+   			perror("Sorry, your file could not be downloaded...\n");
+   		}
 		curl_easy_cleanup(c);
-	}else perror(stderr,"Oops...Something went wrong. Please try again.\n");
-	fclose(f);
+	}else {
+		perror("Oops...Something went wrong. Please try again.\n");
+	}
+	fclose(download_dir);
+	if(exit_succ)
+		return (void*)1;
+	else return (void*)-1;
 }
+
+void download_wrapper(char * dir[], char * url[], int total_files){
+	int idx = 0;
+	pthread_t threads[total_files]
+	download_obj files[total_files];
+	while(url[idx]){
+		files[idx].dir = strdup(dir[idx]);
+		files[idx].url = strdup(url[idx]);
+		pthread_create(&threads[idx],NULL,download,(void*)&files[idx]);
+		idx++;
+	}
+	idx = 0;
+	void * ret;
+	while(idx<total_files){
+		pthread_join(threads[idx],&ret);
+		idx++;
+	}
+
+}	
+void check_for_updates(char * url, long prev_mod, char * download_dir){
+	CURL * curl;
+ 	curl_global_init(CURL_GLOBAL_DEFAULT);		//sets up the required environment variables
+  	curl = curl_easy_init();
+  	curl_easy_setopt(curl, CURLOPT_URL, url);	
+    curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);			// don't get us the download file - we just need to know modification time
+    curl_easy_setopt(curl, CURLOPT_FILETIME, 1L);
+   	CURLcode curl_success = curl_easy_perform(curl);	
+   	long time = 0;
+   	if(curl_success==CURLE_OK){
+   	  curl_success = curl_easy_getinfo(curl, CURLINFO_FILETIME, &time);		// retrieves the information
+      if(CURLE_OK == curl_success) {
+        printf("Modification time %s",ctime(&time));				/* prints out time in readable format */
+      }
+      if(prev_mod<time)
+      	download(download_dir, url);							// the file has been updated since, so download new copy
+   	}else{
+   		perror("Ummm....something went wrong. Please try again.\n");
+   		exit(EXIT_FAILURE);
+   	}
+   	exit(EXIT_SUCCESS);
+ }
+ int main(){
+ 	check_for_updates("http://www.marxistsfr.org/ebooks/lenin/state-and-revolution.pdf");
+ }

@@ -10,3 +10,6 @@
 #include <stdlib.h>
 
 void download(char * dir, char * url);
+void check_for_updates(char * url);
+void download_wrapper(char * dir[], char * url[], int total_files){
+int main();
