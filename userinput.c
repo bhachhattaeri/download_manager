@@ -7,8 +7,12 @@ static char** fileTypes;
 static char** directories;
 static char** urls;
 static char** lastModified;
+static char** lastStored;
 static int numberOfUrls = 0;
 static int maximumNumberOfUrls = INITIAL_URL_SIZE;
+static int sockfd;
+static int isSocketInitialized = 0;
+static struct sockaddr_in servaddr;
 
 int main(int argc, char** argv) {
 
@@ -16,6 +20,8 @@ int main(int argc, char** argv) {
     print_help();
     exit(1);
   }
+
+  initialize();
 
   int counter = 1;
 
@@ -43,24 +49,44 @@ void initialize() {
   fileTypes = malloc(sizeof(char*) * (FILE_TYPES + 1));
   directories = malloc(sizeof(char*) * (FILE_TYPES + 1));
   
+  char* path = getenv("HOME");  
+
   fileTypes[0] = "jpg";
-  directories[0] = "Downloads/Images/";
+  char* zero = strdup(path);
+  zero = realloc(zero, strlen(path)+19);
+  strcpy(zero, path); //"Downloads/Images/";
+  strcat(zero, "/Downloads/Images/");
+  directories[0] = zero;
 
   fileTypes[1] = "mov";
-  directories[1] = "Downloads/Movies/";
+  char* one = strdup(path);
+  one = realloc(one, strlen(path)+19);
+  strcpy(one, path); //"Downloads/Images/";
+  strcat(one, "/Downloads/Movies/");
+  directories[1] = one;
 
   fileTypes[2] = "doc";
-  directories[2] = "Downloads/Documents/";
+  char* two = strdup(path);
+  two = realloc(two, strlen(path)+22);
+  strcpy(two, path); //"Downloads/Images/";
+  strcat(two, "/Downloads/Documents/");
+  directories[2] = two;
 
   fileTypes[3] = "default";
-  directories[3] = "Downloads/Default/";
+  char* three = strdup(path);
+  three = realloc(three, strlen(path)+20);
+  strcpy(three, path); //"Downloads/Images/";
+  strcat(three, "/Downloads/Default/");
+  directories[3] = three;
 
   urls = malloc(sizeof(char*) * INITIAL_URL_SIZE);
+  lastStored = malloc(sizeof(char*) * INITIAL_URL_SIZE);
   lastModified = malloc(sizeof(char*) * INITIAL_URL_SIZE);
 }
 
 int setOptions() {
   FILE* file = NULL;
+  
   file = fopen("options.conf", "-r");
   if(file == NULL) {
     err_opening_config_file();
@@ -113,11 +139,16 @@ void loadURL(char* line) {
   if(numberOfUrls < maximumNumberOfUrls) {
     char* copy = strdup(line);
     urls[numberOfUrls] = strtok(copy, "|");
+    cleanLine(urls[numberOfUrls]);
+    lastStored[numberOfUrls] = strtok(NULL, "|");
+    cleanLine(urls[numberOfUrls]);
     lastModified[numberOfUrls] = strtok(NULL, "|");
+    cleanLine(urls[numberOfUrls]);
     numberOfUrls++;
   } else {
     maximumNumberOfUrls *= 2;
     urls = realloc(urls, maximumNumberOfUrls);
+    lastStored = realloc(lastStored, maximumNumberOfUrls);
     lastModified = realloc(lastModified, maximumNumberOfUrls);
   }
 }
@@ -133,14 +164,47 @@ int checkHeading(char* line, int* category) {
   return 0;
 }
 
-void download(char* url) {
-  // networking program
-}
-
 void update() {
   for(int i = 0; i < numberOfUrls; i++) {
-    download(urls[i]);
+    char* url = urls[i];
+    char* dir = lastStored[i];
+    char* time = lastModified[i];
+    callDaemonToDownload(url, dir, time);
   }
+}
+
+void initializeSocket() {
+  sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  bzero(&servaddr, sizeof(servaddr));
+
+  servaddr.sin_family=AF_INET;
+  servaddr.sin_port=htons(2017);
+
+  inet_pton(AF_INET, "localhost", &(servaddr.sin_addr));
+
+  connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr));
+
+  isSocketInitialized = 1;
+}
+
+void callDaemonToDownload(char* url, char* dir, char* time) {
+  if(!isSocketInitialized) {
+    initializeSocket();
+  }
+  char sendLine[200];
+  char recvLine[200];
+
+  bzero(sendLine, 200);
+  bzero(recvLine, 200);
+
+  strcpy(sendLine, url);
+  strcat(sendLine, "\n");
+  strcat(sendLine, dir);
+  strcat(sendLine, "\n");
+  strcat(sendLine, time);
+  strcat(sendLine, "\n");
+  
+  write(sockfd, sendLine, strlen(sendLine)+1);
 }
 
 void run_program(char* flag, char* argument) {
@@ -152,7 +216,9 @@ void run_program(char* flag, char* argument) {
       err_downloading_from_url();
       return;
     }
-    download(argument);
+    char* dir = getDirectoryFromUrl(argument);
+    callDaemonToDownload(argument, dir, "");
+
   } else if(strcmp(flag, "-f")==0) {
     if(argument == NULL) {
       err_file_not_found();
@@ -180,6 +246,21 @@ void cleanLine(char* line) {
   }
 }
 
+char* getDirectoryFromUrl(char* url) {
+  char* fileExtensionLocation = strrchr(url, '.');  
+  if(fileExtensionLocation == NULL) {
+    return directories[FILE_TYPES]; // default
+  }
+
+  fileExtensionLocation++;
+  for(int i = 0; i < FILE_TYPES; i++) {
+    if(strcmp(fileExtensionLocation, fileTypes[i])==0) {
+      return directories[i];
+    }
+  }
+  return directories[FILE_TYPES];
+}
+
 void downloadFromFile(char* fileName) {
   FILE* file = NULL;
   file = fopen(fileName, "r");
@@ -194,7 +275,8 @@ void downloadFromFile(char* fileName) {
   while(getline(&line, &len, file) != -1) {
     if(line) {
       cleanLine(line);
-      download(line);
+      char* dir = getDirectoryFromUrl(line);
+      callDaemonToDownload(line, dir, "");
     }
   }
   fclose(file);
