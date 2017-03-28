@@ -188,9 +188,9 @@ void initializeSocket() {
 }
 
 void callDaemonToDownload(char* url, char* dir, char* time) {
-  if(!isSocketInitialized) {
+  //if(!isSocketInitialized) {
     initializeSocket();
-  }
+  //}
   char sendLine[200];
   char recvLine[200];
 
@@ -205,6 +205,9 @@ void callDaemonToDownload(char* url, char* dir, char* time) {
   strcat(sendLine, "\n");
   
   write(sockfd, sendLine, strlen(sendLine)+1);
+
+  shutdown(sockfd, 2);
+  close(sockfd);
 }
 
 void run_program(char* flag, char* argument) {
