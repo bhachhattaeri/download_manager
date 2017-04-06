@@ -176,6 +176,3 @@ int extract_information(char **first, char **second, char **third, FILE *input){
 					return num_request;
 }
 
-int main(){
-	return 0;
-}
