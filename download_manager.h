@@ -10,10 +10,10 @@
 #include <curl/curl.h>
 #include <stdlib.h>
 
-void download(void * obj);
+void * download(void * obj);
 
 void download_wrapper(char * dir[], char * url[], int total_files);
-void check_for_updates(char * url, long prev_mod, char * download_dir){
+void check_for_updates(char * url, long prev_mod, char * download_dir);
 
-int main();
+//int main();
 

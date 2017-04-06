@@ -1,3 +1,7 @@
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 /*The purpose of this program is create a daemon process.I will use fork to create another process and then end the original process. Before we ends the parent, process we need to make the child process leader ofthe */
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,14 +42,21 @@ int download_server(){
 			if(chdir("/") < 0){
 				exit(EXIT_FAILURE);
 			}
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 			printf("My id is %d and my parent's Process id is %d.\n",getpid(),getppid());
 			close(STDIN_FILENO);
 			close(STDOUT_FILENO);
 			close(STDERR_FILENO);
-
 */
 
+<<<<<<< Updated upstream
+*/
+
+=======
+>>>>>>> Stashed changes
 				FILE *test = fopen("testing.txt", "+w");
 					if(test != NULL){
 						write(fileno(test),"Hello World!",12);
@@ -140,4 +151,8 @@ int download_server(){
 int main(){
 download_server();
 return 0;
+<<<<<<< Updated upstream
 }
+=======
+}
+>>>>>>> Stashed changes

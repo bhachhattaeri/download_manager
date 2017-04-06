@@ -11,7 +11,7 @@ typedef struct download_obj{
 *  If download is successfully performed, returns (void*)1
 *  else it will return (void*)-1 
 */
-void download(void * obj){
+void * download(void * obj){
 	download_obj * file = (download_obj*)obj;
 	char * dir = file->dir;
 	char * url = file->url;
@@ -27,9 +27,9 @@ void download(void * obj){
    		curl_easy_setopt(c, CURLOPT_WRITEDATA, download_dir);		// stored the retrieved file in that location
    		success = curl_easy_perform(c);
    		if(success == CURLE_OK){
-   			double total_time = 0
-   			success = curl_easy_getinfo(curl, CURLINFO_TOTAL_TIME, total_time);		// retrieves the information
-   			if(success = CURLE_OK){
+   			int total_time = 0;
+   			success = curl_easy_getinfo(c, CURLINFO_TOTAL_TIME, total_time);		// retrieves the information
+   			if(success == CURLE_OK){
    				int minutes = (total_time/60);
    				int seconds = total_time % 60;
    				printf("Total time: %d:%d\n",minutes,seconds);
@@ -50,7 +50,7 @@ void download(void * obj){
 
 void download_wrapper(char * dir[], char * url[], int total_files){
 	int idx = 0;
-	pthread_t threads[total_files]
+	pthread_t threads[total_files];
 	download_obj files[total_files];
 	while(url[idx]){
 		files[idx].dir = strdup(dir[idx]);
@@ -81,16 +81,20 @@ void check_for_updates(char * url, long prev_mod, char * download_dir){
         printf("Modification time %s",ctime(&time));				/* prints out time in readable format */
       }
       if(prev_mod<time){
-      	download_obj obj;
-      	obj.url = strdup(url);
-      	obj.dir = strdup(download_dir);
-      	download(download_dir, (void*)&url);						// the file has been updated since, so download new copy
-   	}else{
-   		perror("Ummm....something went wrong. Please try again.\n");
-   		exit(EXIT_FAILURE);
-   	}
+      	 download_obj obj;
+      	 obj.url = strdup(url);
+      	 obj.dir = strdup(download_dir);
+
+      	 download(&obj);						// the file has been updated since, so download new copy
+   	  }else{
+   		   perror("Ummm....something went wrong. Please try again.\n");
+   		   exit(EXIT_FAILURE);
+   	  }
    	exit(EXIT_SUCCESS);
- }
+  }
+}  
+
+ /*
  int main(){
  	check_for_updates("http://www.marxistsfr.org/ebooks/lenin/state-and-revolution.pdf");
- }
+ }*/
