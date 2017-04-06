@@ -197,7 +197,9 @@ void callDaemonToDownload(char* url, char* dir, char* time) {
   bzero(sendLine, 200);
   bzero(recvLine, 200);
 
-  strcpy(sendLine, url);
+  strcpy(sendLine, "1");
+  strcat(sendLine, "\t");
+  strcat(sendLine, url);
   strcat(sendLine, "\n");
   strcat(sendLine, dir);
   strcat(sendLine, "\n");
