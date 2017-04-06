@@ -10,11 +10,12 @@
 #include <sys/un.h>
 #include <netinet/in.h>
 #include "extract.c"
+#include <errno.h>
 
 #define _GNU_SOURCE
 
 int download_server(){
-    pid_t sid = 0;
+/*    pid_t sid = 0;
 	pid_t child = fork();
 	
 	if(child > 0){
@@ -43,29 +44,39 @@ int download_server(){
 			close(STDOUT_FILENO);
 			close(STDERR_FILENO);
 
+*/
+
+				FILE *test = fopen("testing.txt", "+w");
+					if(test != NULL){
+						write(fileno(test),"Hello World!",12);
+					
+					}
+	
 			//Daemon is created by the above codes. The following codes should read from the incoming TCP connection and do appropriate procedure.
 				int server_sock = socket(AF_UNIX, SOCK_STREAM, 0);
 				if(server_sock==-1){
-					perror("The file can not be downloaded.\n");
+					perror("The file can not be downloaded.socket\n");
 					perror("error code: socket() failed\n");
+					printf("an error: %d\n",errno);
 					exit(EXIT_FAILURE);
 				}
+
 
 				struct sockaddr_in  server_addr;
 				server_addr.sin_family = AF_UNIX;
 				server_addr.sin_port = htons(2017);
 				(server_addr.sin_addr).s_addr = htons(INADDR_ANY);
 				
-				int is_sock_bind = bind(server_sock,(struct sockaddr*)&(server_addr.sin_addr), sizeof(struct sockaddr_un));
+				int is_sock_bind = bind(server_sock,(struct sockaddr*)(&server_addr), sizeof(struct sockaddr));
 				if(is_sock_bind == -1){
-					perror("The file can not be downloaded.\n");
+					perror("The file can not be downloaded.bind\n");
 					perror("error code: bind() failed\n");
 					exit(EXIT_FAILURE);
 				}
 
 				int can_listen = listen(server_sock,128);
 				if(can_listen == -1){
-					perror("The file can not be downloaded.\n");
+					perror("The file can not be downloaded.listen\n");
 					perror("error code: listen() failed\n");
 					exit(EXIT_FAILURE);
 				}
@@ -75,7 +86,7 @@ int download_server(){
 				int is_accepted = accept(server_sock, (struct sockaddr*)&incoming, &addr_len);
 
 				if(is_accepted < 0){
-					perror("The file can not be downloaded.\n");
+					perror("The file can not be downloaded.accept\n");
 					perror("error code: accept() failed\n");
 					exit(EXIT_FAILURE);
 				}
@@ -107,6 +118,7 @@ int download_server(){
 						perror("The file can not be downloaded.\n");
 						exit(EXIT_FAILURE);
 					}
+				fclose(test);
 
 					is_accepted = accept(server_sock, (struct sockaddr*)&incoming, &addr_len);		
 
@@ -119,13 +131,13 @@ int download_server(){
 			   }//while ends
 
 
-			}//else-ends
+	//		}//else-ends
 		
 	
 	return 0;
 }//main ends
 
 int main(){
-
+download_server();
 return 0;
 }
