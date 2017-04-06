@@ -47,7 +47,7 @@ int download_server(){
 				int server_sock = socket(AF_UNIX, SOCK_STREAM, 0);
 				if(server_sock==-1){
 					perror("The file can not be downloaded.\n");
-					perror("error code: socket failed\n");
+					perror("error code: socket() failed\n");
 					exit(EXIT_FAILURE);
 				}
 
@@ -59,28 +59,28 @@ int download_server(){
 				int is_sock_bind = bind(server_sock,(struct sockaddr*)&(server_addr.sin_addr), sizeof(struct sockaddr_un));
 				if(is_sock_bind == -1){
 					perror("The file can not be downloaded.\n");
-					perror("error code: bind failed\n");
+					perror("error code: bind() failed\n");
 					exit(EXIT_FAILURE);
 				}
 
 				int can_listen = listen(server_sock,128);
 				if(can_listen == -1){
 					perror("The file can not be downloaded.\n");
-					perror("error code: listen failed\n");
+					perror("error code: listen() failed\n");
 					exit(EXIT_FAILURE);
 				}
 
 				struct sockaddr_in incoming;
-				socklen_t addr_len = sizeof(struct sockaddr_in);
-				int is_accepted = accept(server_sock, (struct sockaddr_in *)&incoming, &addr_len);
+				socklen_t addr_len = sizeof(struct sockaddr);
+				int is_accepted = accept(server_sock, (struct sockaddr*)&incoming, &addr_len);
 
 				if(is_accepted < 0){
 					perror("The file can not be downloaded.\n");
-					perror("error code: accept failed\n");
+					perror("error code: accept() failed\n");
 					exit(EXIT_FAILURE);
 				}
 				
-			   	FILE *in = fopen("input.txt", w+);
+			   	FILE *in = fopen("input.txt", "w+");
 				if(in == NULL){
 					perror("extract_information failed.\n");
 					perror("error code: fopen\n");
@@ -89,27 +89,33 @@ int download_server(){
 
 			   	while(is_accepted > 0){
 					char buf[1024];
-				    	ssize_t r = read(is_accepted, buf, 1024);
+				    ssize_t r = read(is_accepted, buf, 1024);
 		
 					while(r > 0){
-						fwrite(in, buf, r);
+						write(fileno(in), buf, r);
 						r = read(is_accepted, buf, 1024);
 					}						
 					
-
 					char **array_folders;
 					char **array_urls;
 					char **array_times;
 					close(is_accepted);	
 					
-					int did_extract = extract_information(array_folders, array_urls, array_times, input);
+					int did_extract = extract_information(array_folders, array_urls, array_times, in);
 			   		//at the end
 					if(did_extract < 0){
 						perror("The file can not be downloaded.\n");
 						exit(EXIT_FAILURE);
 					}
 
-					is_accepted = accept(server_sock, incoming, &addr_len);			
+					is_accepted = accept(server_sock, (struct sockaddr*)&incoming, &addr_len);		
+
+					if(is_accepted < 0){
+						perror("The file can not be downloaded.\n");
+						perror("error code: accept() failed\n");
+						exit(EXIT_FAILURE);
+					}
+	
 			   }//while ends
 
 
@@ -119,3 +125,7 @@ int download_server(){
 	return 0;
 }//main ends
 
+int main(){
+
+return 0;
+}
