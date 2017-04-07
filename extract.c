@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
+#include <unistd.h>
 //set fd to the begining of the input filr
 int set_file_to_begin(FILE *input){
 
