@@ -113,7 +113,7 @@ int download_server(){
 					
 					
 			   	while(is_accepted > 0){
-				   	FILE *in = fopen("/Users/Bhawesh/Desktop/input.txt", "w+");
+				   	FILE *in = fopen("input.txt", "w+");
 					if(in == NULL){
 						perror("extract_information failed.\n");
 						perror("error code: fopen\n");
@@ -130,7 +130,6 @@ int download_server(){
 							fputc(buf[c],in);
 							c++;
 						}
-
 					 	r = read(is_accepted, buf, 1024);
 			    	}				
 					//buf = "THIS IS LINE ONE";		

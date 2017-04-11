@@ -14,6 +14,9 @@ static int sockfd;
 static int isSocketInitialized = 0;
 static struct sockaddr_in servaddr;
 
+
+// uncomment to run without gui
+/*
 int main(int argc, char** argv) {
 
   if(argc <= 1) {
@@ -43,7 +46,7 @@ int main(int argc, char** argv) {
   }
 
   return 0;
-}
+} */
 
 void initialize() {
   fileTypes = malloc(sizeof(char*) * (FILE_TYPES + 1));
@@ -191,6 +194,7 @@ void callDaemonToDownload(char* url, char* dir, char* time) {
   //if(!isSocketInitialized) {
     initializeSocket();
   //}
+  printf("Inside calling daemon to download\n");
   char sendLine[200];
   char recvLine[200];
 
