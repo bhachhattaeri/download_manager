@@ -1,0 +1,3 @@
+http://cs241.cs.illinois.edu/lab_resources/handouts/know_your_tools.pdf
+http://cs241.cs.illinois.edu/lab_resources/handouts/extreme_edge_cases.pdf
+http://cs241.cs.illinois.edu/lab_resources/handouts/utilities_unleashed.pdf
