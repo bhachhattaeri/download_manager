@@ -16,15 +16,17 @@ static struct sockaddr_in servaddr;
 
 
 // uncomment to run without gui
-/*
+
 int main(int argc, char** argv) {
 
   if(argc <= 1) {
     print_help();
     exit(1);
   }
+   //   printf("Here\n" );
 
   initialize();
+     // printf("Here\n" );
 
   int counter = 1;
 
@@ -35,18 +37,20 @@ int main(int argc, char** argv) {
       }
       break;
     }
+    counter++;
   }
 
   counter = 1;
   while(counter < argc) {
     if(argv[counter][0]=='-') { //if is flag
+      //printf("%s\n",argv[counter] );
       run_program(argv[counter], argv[counter+1]);
     }
     counter++;
   }
 
   return 0;
-} */
+} 
 
 void initialize() {
   fileTypes = malloc(sizeof(char*) * (FILE_TYPES + 1));
@@ -71,7 +75,7 @@ void initialize() {
   fileTypes[2] = "doc";
   char* two = strdup(path);
   two = realloc(two, strlen(path)+22);
-  strcpy(two, path); //"Downloads/Images/";
+  strcpy(two, path);
   strcat(two, "/Downloads/Documents/");
   directories[2] = two;
 
@@ -79,8 +83,8 @@ void initialize() {
   char* three = strdup(path);
   three = realloc(three, strlen(path)+20);
   strcpy(three, path); //"Downloads/Images/";
-  strcat(three, "/Downloads/Default/");
-  directories[3] = three;
+  strcat(three, "/Desktop/");
+  directories[3] = three; 
 
   urls = malloc(sizeof(char*) * INITIAL_URL_SIZE);
   lastStored = malloc(sizeof(char*) * INITIAL_URL_SIZE);
@@ -180,8 +184,8 @@ void initializeSocket() {
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   bzero(&servaddr, sizeof(servaddr));
 
-  servaddr.sin_family=AF_INET;
-  servaddr.sin_port=htons(2017);
+  servaddr.sin_family = AF_INET;
+  servaddr.sin_port=htons(1234);
 
   inet_pton(AF_INET, "localhost", &(servaddr.sin_addr));
 
@@ -195,6 +199,8 @@ void callDaemonToDownload(char* url, char* dir, char* time) {
     initializeSocket();
   //}
   printf("Inside calling daemon to download\n");
+
+           // return;
   char sendLine[200];
   char recvLine[200];
 
@@ -209,7 +215,7 @@ void callDaemonToDownload(char* url, char* dir, char* time) {
   strcat(sendLine, "\n");
   strcat(sendLine, time);
   strcat(sendLine, "\n");
-  
+  printf("%s\n",sendLine );
   write(sockfd, sendLine, strlen(sendLine)+1);
 
   shutdown(sockfd, 2);
