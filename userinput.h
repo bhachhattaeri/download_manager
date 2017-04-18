@@ -9,6 +9,7 @@
 #include <string.h>
 #include <assert.h>
 #include <ctype.h>
+#include <time.h>
 
 void storeCustomDestinations(char* line);
 
@@ -19,6 +20,8 @@ int checkHeading(char* line, int* category);
 int setOptions();
 
 void initialize();
+
+void saveToConfigFile(char* url, char* dir);
 
 void initializeSocket();
 

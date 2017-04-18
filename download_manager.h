@@ -10,7 +10,7 @@
 #include <curl/curl.h>
 #include <stdlib.h>
 #include <pthread.h>
-
+#include <errno.h>
 
 void * download(void * obj);
 

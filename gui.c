@@ -13,25 +13,30 @@ char* filename = NULL;
 char* folder = NULL;
 char* url = NULL;
 
+static void start_update(GtkWidget *widget, gpointer data) {
+  run_program("-u", "notUsed");  
+}
+
 static void start_download(GtkWidget *widget, gpointer data) {
   url = gtk_entry_get_text(GTK_ENTRY(urlEntry));
 
   if(url != NULL) {
     char actual_folder[200];
     strcpy(actual_folder, folder);
-    strcat(actual_folder, "something.pdf");
+    strcat(actual_folder, "/");
 //    printf("Folder: %s\n", folder);
     if(folder == NULL) {
       printf("Folder: %s\n", folder);
       
       char* temporary = getDirectoryFromUrl(url);
       strcpy(actual_folder, temporary);
-      strcat(actual_folder, "something.pdf");
+    } else {
+
     }
     char* time = "";
     printf("Downloading %s\n", url);
     char* copyUrl = strdup(url);
-    callDaemonToDownload(url, folder, time);
+    callDaemonToDownload(url, actual_folder, time);
   }
   
   if(filename != NULL) {
@@ -133,9 +138,13 @@ static void activate(GtkApplication *app, gpointer user_data) {
    */
   gtk_grid_attach (GTK_GRID (grid), button, 0, 4, 2, 1);
 
+  button = gtk_button_new_with_label("Update");
+  g_signal_connect_swapped(button, "clicked", G_CALLBACK(start_update), window);
+  gtk_grid_attach(GTK_GRID(grid), button, 0, 5, 2, 1);
+
   downloading_label = gtk_label_new(NULL);
   gtk_label_set_markup(GTK_LABEL(downloading_label), "");
-  gtk_grid_attach(GTK_GRID(grid), downloading_label, 0, 5, 2, 1);
+  gtk_grid_attach(GTK_GRID(grid), downloading_label, 0, 6, 2, 1);
 
   /* Now that we are done packing our widgets, we show them all
    * in one go, by calling gtk_widget_show_all() on the window.
