@@ -32,7 +32,7 @@ void callDaemonToDownload(char* url, char* dir, char* time);
 void update();
 
 //void download(char* fileURL);
-
+//int main(){}
 void downloadFromFile(char* fileName);
 
 void cleanLine(char* line);
