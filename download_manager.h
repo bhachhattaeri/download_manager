@@ -11,8 +11,11 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <errno.h>
+<<<<<<< HEAD
 #include <sys/types.h>
 #include <dirent.h>
+=======
+>>>>>>> origin/master
 
 void * download(void * obj);
 

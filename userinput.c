@@ -3,6 +3,7 @@
 #define FILE_TYPES (3)
 #define INITIAL_URL_SIZE (4)
 
+static int custom = 0;
 static char** fileTypes;
 static char** directories;
 static char** urls;
@@ -17,7 +18,7 @@ static struct sockaddr_in servaddr;
 
 // uncomment to run without gui
 
-int main(int argc, char** argv) {
+/*int main(int argc, char** argv) {
 
   if(argc <= 1) {
     print_help();
@@ -32,7 +33,8 @@ int main(int argc, char** argv) {
 
   while(counter < argc) {
     if(strcmp(argv[counter], "-c")==0) { // if custom
-      if(setOptions()==-1) { //error finding config file
+      custom = 1;
+      if(setOptions(1)==-1) { //error finding config file
         exit(1);
       }
       break;
@@ -51,7 +53,7 @@ int main(int argc, char** argv) {
 
   return 0;
 } 
-
+*/
 void initialize() {
   fileTypes = malloc(sizeof(char*) * (FILE_TYPES + 1));
   directories = malloc(sizeof(char*) * (FILE_TYPES + 1));
@@ -91,10 +93,10 @@ void initialize() {
   lastModified = malloc(sizeof(char*) * INITIAL_URL_SIZE);
 }
 
-int setOptions() {
+int setOptions(int customDestinations) {
   FILE* file = NULL;
   
-  file = fopen("options.conf", "-r");
+  file = fopen("options.conf", "r");
   if(file == NULL) {
     err_opening_config_file();
     return -1;
@@ -114,11 +116,10 @@ int setOptions() {
       continue;
     }
 
-    if(category == 1) {
+    if(category == 1 && customDestinations == 1) {
       storeCustomDestinations(line);
     } else if(category == 2) {
       loadURL(line);
-      numberOfUrls++;
     }
   }
 
@@ -154,9 +155,18 @@ void loadURL(char* line) {
     numberOfUrls++;
   } else {
     maximumNumberOfUrls *= 2;
-    urls = realloc(urls, maximumNumberOfUrls);
-    lastStored = realloc(lastStored, maximumNumberOfUrls);
-    lastModified = realloc(lastModified, maximumNumberOfUrls);
+    urls = realloc(urls, maximumNumberOfUrls * sizeof(char*));
+    lastStored = realloc(lastStored, maximumNumberOfUrls * sizeof(char*));
+    lastModified = realloc(lastModified, maximumNumberOfUrls * sizeof(char*));
+   
+    char* copy = strdup(line);
+    urls[numberOfUrls] = strtok(copy, "|");
+    cleanLine(urls[numberOfUrls]);
+    lastStored[numberOfUrls] = strtok(NULL, "|");
+    cleanLine(urls[numberOfUrls]);
+    lastModified[numberOfUrls] = strtok(NULL, "|");
+    cleanLine(urls[numberOfUrls]);
+    numberOfUrls++;
   }
 }
 
@@ -171,17 +181,82 @@ int checkHeading(char* line, int* category) {
   return 0;
 }
 
+void rewriteLines() {
+  FILE* file = fopen("options.conf", "r");
+  if(file == NULL) {
+    return;
+  }
+
+  FILE* temporary = fopen("temporary.conf", "w+");
+
+  char* line = NULL; 
+  size_t len;
+
+  while(getline(&line, &len, file) != -1) {
+    cleanLine(line);
+    int found = 0;
+
+    for(int i = 0; i < numberOfUrls; i++) {
+      char* url = urls[i];
+      char* dir = lastStored[i];
+      char* time = lastModified[i];
+ 
+      char oldLine[200];
+      memset(oldLine, 0, 200);
+      strcpy(oldLine, url);
+      strcat(oldLine, "|");
+      strcat(oldLine, dir);
+      strcat(oldLine, "|");
+      strcat(oldLine, time);
+      if(strcmp(line, oldLine)==0) {    
+        found = 1;
+        break;
+      }
+    }
+    if(found==0) {
+      fprintf(temporary, "%s\n", line);
+    }
+  }
+  fclose(temporary);
+  fclose(file);
+
+  file =fopen("options.conf", "w+");
+  temporary = fopen("temporary.conf", "r");
+
+  while(getline(&line, &len, temporary) != -1) {
+    fprintf(file, "%s", line);
+  }
+
+  fclose(temporary);
+  fclose(file);
+
+  remove("temporary.conf");
+  
+}
+
 void update() {
+  printf("update %d", numberOfUrls);
   for(int i = 0; i < numberOfUrls; i++) {
     char* url = urls[i];
     char* dir = lastStored[i];
     char* time = lastModified[i];
     callDaemonToDownload(url, dir, time);
   }
+  rewriteLines();
+  for(int i = 0; i < numberOfUrls; i++) {
+    char* url = urls[i];
+    char* dir = lastStored[i];
+    saveToConfigFile(url, dir);
+  }
 }
 
 void initializeSocket() {
+  printf("initialize Socket\n");
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  if(sockfd == -1) {
+    perror("socket()");
+    printf("error\n");
+  }
   bzero(&servaddr, sizeof(servaddr));
 
   servaddr.sin_family = AF_INET;
@@ -189,7 +264,10 @@ void initializeSocket() {
 
   inet_pton(AF_INET, "localhost", &(servaddr.sin_addr));
 
-  connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr));
+  if(connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr))== -1){
+    perror("connect()");
+    printf("error\n");
+  }
 
   isSocketInitialized = 1;
 }
@@ -215,16 +293,45 @@ void callDaemonToDownload(char* url, char* dir, char* time) {
   strcat(sendLine, "\n");
   strcat(sendLine, time);
   strcat(sendLine, "\n");
-  printf("%s\n",sendLine );
+  printf("Line: %s\n",sendLine );
   write(sockfd, sendLine, strlen(sendLine)+1);
 
   shutdown(sockfd, 2);
   close(sockfd);
 }
 
+void saveToConfigFile(char* url, char* dir) {
+  FILE* file = NULL;
+
+  file = fopen("options.conf", "a");
+  if(file == NULL) {
+    err_opening_config_file();
+    return;
+  }
+
+  if(dir == NULL) {
+    dir = getDirectoryFromUrl(url);
+  }
+
+  char line[300];
+  memset(line, 0, 300);
+  strcpy(line, url);
+  strcat(line, "|");
+  strcat(line, dir);
+  strcat(line, "|");
+
+  sprintf(line+strlen(line), "%lu\n", (unsigned long)time(NULL));
+
+  fprintf(file, "%s", line);
+  fclose(file);
+}
+
 void run_program(char* flag, char* argument) {
   assert(flag);
   if(strcmp(flag, "-u")==0) {
+    if(custom == 0) {
+      setOptions(0);
+    }
     update();
   } else if(strcmp(flag, "-d")==0) {
     if(argument == NULL) {
@@ -240,6 +347,14 @@ void run_program(char* flag, char* argument) {
       return;
     }
     downloadFromFile(argument);
+  } else if(strcmp(flag, "-ds")==0) {
+    if(argument == NULL) {
+      err_downloading_from_url();
+      return;
+    }
+    char* dir = getDirectoryFromUrl(argument);
+    callDaemonToDownload(argument, dir, "");
+    saveToConfigFile(argument, dir);
   }
 }
 

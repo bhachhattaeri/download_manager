@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="images/favicons/manifest.json">
+  <link rel="mask-icon" href="images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>CS 241 - System Programming</title>
+  <meta name="description" content="Webpage for CS241: System Programming at the University of Illinois Urbana-Champaign. All documentation and information about the course can be found here.
+">
+
+  <link rel="canonical" href="http://illinois-cs241.github.io/labs.html">
+  <link rel="alternate" type="application/rss+xml" title="CS 241 - System Programming" href="http://illinois-cs241.github.io/feed.xml">
+
+  <link rel="stylesheet" href="./css/main.css">
+  <!-- jQuery -->
+  <script src="./lib/jquery-2.1.3.min/index.js"></script>
+  <!-- Foundation -->
+  <script src="./lib/foundation/js/foundation.min.js"></script>
+  <link rel="stylesheet" href="./lib/foundation/css/foundation.css">
+  <!-- Google Material Design -->
+  <link rel="stylesheet" href="./lib/material-design-lite/material.min.css">
+  <script src="./lib/material-design-lite/material.min.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <!-- textfill -->
+  <script src="./js/textfill.js"></script>
+  <!-- Google Analytics -->
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-73726852-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+</head>
+
+  <body>
+      <!-- Always shows a header, even in smaller screens. -->
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--no-desktop-drawer-button">
+  <header class="mdl-layout__header">
+    
+    <div class="mdl-layout__header-row">
+      <!-- Title -->
+      <span class="mdl-layout-title">CS 241: System Programming</span>
+      <a id="tuxlink"><img src="https://upload.wikimedia.org/wikipedia/commons/a/af/Tux.png" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white);"/></a><script>$(function() { $("#tuxlink").prop("href", "javascript:;").click(function() { if ("WebkitAppearance" in document.documentElement.style) { var style = document.createElement("style"); style.setAttribute("id", "tuxstyle"); style.appendChild(document.createTextNode("")); document.head.appendChild(style); var sheet = style.sheet; sheet.insertRule("::-webkit-scrollbar-thumb {border-radius: 0; background-color: white; -webkit-box-shadow: none;}", 0); } $("html, body, header, nav, :not(.card-staff) > * > div:not(.card-staff), table, pre, span, :not(.card-staff) > a, p, h1, h2, h3, h4, h5, h6").css("color", "white").css("font-family", "monospace").css("background-color", "black"); $("ul").css("list-style-type", "square"); $("img").css("filter", "drop-shadow(white 1px 1px 0px) drop-shadow(white 1px -1px 0px) drop-shadow(white -1px 1px 0px) drop-shadow(white -1px -1px 0px)"); $("pre").css("border-color", "white").css("border-radius", "0"); $(".toc").css("border-left-width", "0"); $(".content .highlighter-rouge").css("font-weight", "bold").css("background-color", "black"); $(".large-centered.columns").css("margin-left", "2em"); $(".pad").css("padding", "0"); $(".mdl-navigation__link").css("padding", "0 16px").css("opacity", "1.0"); $(".mdl-data-table").removeClass("mdl-data-table"); $("#tuxlink img").css("-ms-interpolation-mode", "nearest-neighbor").css("image-rendering", "pixelated").prop("src", "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII="); $("#tuxlink").click(function() { location.reload(); return false; }); return false; }); }); </script>
+      <!-- Add spacer, to align navigation to the right -->
+      <div class="mdl-layout-spacer"></div>
+      <!-- Navigation. We hide it in small screens. -->
+      <nav class="mdl-navigation mdl-layout--large-screen-only">
+        
+      <a class="mdl-navigation__link" href="./index.html">Overview</a>
+      <a class="mdl-navigation__link" href="./mps.html">MPs</a>
+      <a class="mdl-navigation__link" href="./labs.html">Lab Sections</a>
+      <a class="mdl-navigation__link" href="./help.html">Getting Help</a>
+      <a class="mdl-navigation__link" href="./schedule.html">Schedule</a>
+      <a class="mdl-navigation__link" href="./honors.html">Honors</a>
+      <a class="mdl-navigation__link" href="./staff.html">Meet the Crew!</a>
+    
+      </nav>
+    </div>
+  </header>
+  <div class="mdl-layout__drawer">
+    <span class="mdl-layout-title">CS 241</span>
+    <nav class="mdl-navigation">
+      
+      <a class="mdl-navigation__link" href="./index.html">Overview</a>
+      <a class="mdl-navigation__link" href="./mps.html">MPs</a>
+      <a class="mdl-navigation__link" href="./labs.html">Lab Sections</a>
+      <a class="mdl-navigation__link" href="./help.html">Getting Help</a>
+      <a class="mdl-navigation__link" href="./schedule.html">Schedule</a>
+      <a class="mdl-navigation__link" href="./honors.html">Honors</a>
+      <a class="mdl-navigation__link" href="./staff.html">Meet the Crew!</a>
+    
+    </nav>
+  </div>
+
+      <main class="mdl-layout__content">
+        <div class="page-content">
+          <!-- Your content goes here -->
+          <div class="row">
+          	<div class="small-12 medium-12 large-8 large-centered columns">
+              <h1>Labs</h1>
+              <p>All labs are released on Thursdays and due on the following Wednesday at 11:59pm</p>
+              <!-- Desktop Table -->
+              <div class="show-for-large-up">
+                <table width = "100%" class="mdl-data-table mdl-js-data-table">
+            		  <thead>
+            		    <tr>
+            		      <th class="mdl-data-table__cell--non-numeric">Lab</th>
+            		      <th class="mdl-data-table__cell--non-numeric">Release Date</th>
+                      <th class="mdl-data-table__cell--non-numeric">Due Date</th>
+                      <th class="mdl-data-table__cell--non-numeric">Slides</th>
+                      <th class="mdl-data-table__cell--non-numeric">Handout</th>
+            		    </tr>
+            		  </thead>
+            		  <tbody>
+                    
+                      <tr>
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./know_your_tools.html">Know Your Tools</a></td>
+              		    	<td class="mdl-data-table__cell--non-numeric">Week 1</td>
+                        <td class="mdl-data-table__cell--non-numeric">Week 2</td>
+                        
+
+                        
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./lab_resources/slides/know_your_tools.html"><img src="./images/lab_assets/animation.png"></a></td>
+                        
+                        
+                        <td class="mdl-data-table__cell--non-numeric">
+                        <a href="./lab_resources/handouts/know_your_tools.pdf"><img src="./images/lab_assets/file-document.png"></a></td>
+                        
+
+                        
+                      </tr>
+                    
+                      <tr>
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./extreme_edge_cases.html">Extreme Edge Cases</a></td>
+              		    	<td class="mdl-data-table__cell--non-numeric">Week 2</td>
+                        <td class="mdl-data-table__cell--non-numeric">Week 3</td>
+                        
+
+                        
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./lab_resources/slides/extreme_edge_cases.html"><img src="./images/lab_assets/animation.png"></a></td>
+                        
+                        
+                        <td class="mdl-data-table__cell--non-numeric">
+                        <a href="./lab_resources/handouts/extreme_edge_cases.pdf"><img src="./images/lab_assets/file-document.png"></a></td>
+                        
+
+                        
+                      </tr>
+                    
+                      <tr>
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./utilities_unleashed.html">Utilities Unleashed</a></td>
+              		    	<td class="mdl-data-table__cell--non-numeric">Week 3</td>
+                        <td class="mdl-data-table__cell--non-numeric">Week 4</td>
+                        
+
+                        
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./lab_resources/slides/utilities_unleashed.html"><img src="./images/lab_assets/animation.png"></a></td>
+                        
+                        
+                        <td class="mdl-data-table__cell--non-numeric">
+                        <a href="./lab_resources/handouts/utilities_unleashed.pdf"><img src="./images/lab_assets/file-document.png"></a></td>
+                        
+
+                        
+                      </tr>
+                    
+                      <tr>
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./mini_valgrind.html">Mini Valgrind</a></td>
+              		    	<td class="mdl-data-table__cell--non-numeric">Week 4</td>
+                        <td class="mdl-data-table__cell--non-numeric">Week 5</td>
+                        
+
+                        
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./lab_resources/slides/mini_valgrind.html"><img src="./images/lab_assets/animation.png"></a></td>
+                        
+                        
+                        <td class="mdl-data-table__cell--non-numeric">
+                        <a href="./lab_resources/handouts/mini_valgrind.pdf"><img src="./images/lab_assets/file-document.png"></a></td>
+                        
+
+                        
+                      </tr>
+                    
+                      <tr>
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./teaching_threads.html">Teaching Threads</a></td>
+              		    	<td class="mdl-data-table__cell--non-numeric">Week 5</td>
+                        <td class="mdl-data-table__cell--non-numeric">Week 6</td>
+                        
+
+                        
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./lab_resources/slides/teaching_threads.html"><img src="./images/lab_assets/animation.png"></a></td>
+                        
+                        
+                        <td class="mdl-data-table__cell--non-numeric">
+                        <a href="./lab_resources/handouts/teaching_threads.pdf"><img src="./images/lab_assets/file-document.png"></a></td>
+                        
+
+                        
+                      </tr>
+                    
+                      <tr>
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./splendid_synchronization.html">Splendid Synchronization</a></td>
+              		    	<td class="mdl-data-table__cell--non-numeric">Week 6</td>
+                        <td class="mdl-data-table__cell--non-numeric">Week 7</td>
+                        
+
+                        
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./lab_resources/slides/splendid_synchronization.html"><img src="./images/lab_assets/animation.png"></a></td>
+                        
+                        
+                        <td class="mdl-data-table__cell--non-numeric">
+                        <a href="./lab_resources/handouts/splendid_synchronization.pdf"><img src="./images/lab_assets/file-document.png"></a></td>
+                        
+
+                        
+                      </tr>
+                    
+                      <tr>
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./deadlocked_diners.html">Deadlocked Diners</a></td>
+              		    	<td class="mdl-data-table__cell--non-numeric">Week 7</td>
+                        <td class="mdl-data-table__cell--non-numeric">Week 8</td>
+                        
+
+                        
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./lab_resources/slides/deadlocked_diners.html"><img src="./images/lab_assets/animation.png"></a></td>
+                        
+                        
+                        <td class="mdl-data-table__cell--non-numeric">
+                        <a href="./lab_resources/handouts/deadlocked_diners.pdf"><img src="./images/lab_assets/file-document.png"></a></td>
+                        
+
+                        
+                      </tr>
+                    
+                      <tr>
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./ideal_indirection.html">Ideal Indirection</a></td>
+              		    	<td class="mdl-data-table__cell--non-numeric">Week 8</td>
+                        <td class="mdl-data-table__cell--non-numeric">Week 9</td>
+                        
+
+                        
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./lab_resources/slides/ideal_indirection.html"><img src="./images/lab_assets/animation.png"></a></td>
+                        
+                        
+                        <td class="mdl-data-table__cell--non-numeric">
+                        <a href="./lab_resources/handouts/ideal_indirection.pdf"><img src="./images/lab_assets/file-document.png"></a></td>
+                        
+
+                        
+                      </tr>
+                    
+                      <tr>
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./pied_piper.html">Pied Piper</a></td>
+              		    	<td class="mdl-data-table__cell--non-numeric">Week 9</td>
+                        <td class="mdl-data-table__cell--non-numeric">Week 11</td>
+                        
+
+                        
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./lab_resources/slides/pied_piper.html"><img src="./images/lab_assets/animation.png"></a></td>
+                        
+                        
+
+                        
+                      </tr>
+                    
+                      <tr>
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./scheduler.html">Savage Scheduler</a></td>
+              		    	<td class="mdl-data-table__cell--non-numeric">Week 11</td>
+                        <td class="mdl-data-table__cell--non-numeric">Week 12</td>
+                        
+                        <td class="mdl-data-table__cell--non-numeric">
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                        </td>
+                        
+                      </tr>
+                    
+                      <tr>
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./chatroom.html">Chatroom</a></td>
+              		    	<td class="mdl-data-table__cell--non-numeric">Week 12</td>
+                        <td class="mdl-data-table__cell--non-numeric">Week 13</td>
+                        
+
+                        
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./lab_resources/slides/chatroom.html"><img src="./images/lab_assets/animation.png"></a></td>
+                        
+                        
+                        <td class="mdl-data-table__cell--non-numeric">
+                        <a href="./lab_resources/handouts/chatroom.pdf"><img src="./images/lab_assets/file-document.png"></a></td>
+                        
+
+                        
+                      </tr>
+                    
+                      <tr>
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./finding_filesystems.html">Finding Filesystems</a></td>
+              		    	<td class="mdl-data-table__cell--non-numeric">Week 13</td>
+                        <td class="mdl-data-table__cell--non-numeric">Week 14</td>
+                        
+
+                        
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./lab_resources/slides/finding_filesystems.html"><img src="./images/lab_assets/animation.png"></a></td>
+                        
+                        
+                        <td class="mdl-data-table__cell--non-numeric">
+                        <a href="./lab_resources/handouts/finding_filesystems.pdf"><img src="./images/lab_assets/file-document.png"></a></td>
+                        
+
+                        
+                      </tr>
+                    
+                      <tr>
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./mad_mad_access_pattern.html">Mad Mad Access Pattern</a></td>
+              		    	<td class="mdl-data-table__cell--non-numeric">Week 14</td>
+                        <td class="mdl-data-table__cell--non-numeric">Week 15</td>
+                        
+                        <td class="mdl-data-table__cell--non-numeric">
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                        </td>
+                        
+                      </tr>
+                    
+                      <tr>
+                        <td class="mdl-data-table__cell--non-numeric"><a href="./kernal.html">Super Linux Kernel Super Lab</a></td>
+              		    	<td class="mdl-data-table__cell--non-numeric">Week 15</td>
+                        <td class="mdl-data-table__cell--non-numeric">Week 16</td>
+                        
+                        <td class="mdl-data-table__cell--non-numeric">
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                        </td>
+                        
+                      </tr>
+                    
+            		  </tbody>
+            		</table>
+              </div>
+            	<!-- Mobile Table -->
+            	<div class="hide-for-large-up">
+                
+                  <table width = "100%" class="mdl-data-table mdl-js-data-table" style = "margin-bottom: 5%">
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Lab</td>
+                      <td><a href="./know_your_tools.html">Know Your Tools</a></td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Release Date</td>
+                      <td>Week 1</td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Due Date</td>
+                      <td>Week 2</td>
+                    </tr>
+                  </table>
+                
+                  <table width = "100%" class="mdl-data-table mdl-js-data-table" style = "margin-bottom: 5%">
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Lab</td>
+                      <td><a href="./extreme_edge_cases.html">Extreme Edge Cases</a></td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Release Date</td>
+                      <td>Week 2</td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Due Date</td>
+                      <td>Week 3</td>
+                    </tr>
+                  </table>
+                
+                  <table width = "100%" class="mdl-data-table mdl-js-data-table" style = "margin-bottom: 5%">
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Lab</td>
+                      <td><a href="./utilities_unleashed.html">Utilities Unleashed</a></td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Release Date</td>
+                      <td>Week 3</td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Due Date</td>
+                      <td>Week 4</td>
+                    </tr>
+                  </table>
+                
+                  <table width = "100%" class="mdl-data-table mdl-js-data-table" style = "margin-bottom: 5%">
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Lab</td>
+                      <td><a href="./mini_valgrind.html">Mini Valgrind</a></td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Release Date</td>
+                      <td>Week 4</td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Due Date</td>
+                      <td>Week 5</td>
+                    </tr>
+                  </table>
+                
+                  <table width = "100%" class="mdl-data-table mdl-js-data-table" style = "margin-bottom: 5%">
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Lab</td>
+                      <td><a href="./teaching_threads.html">Teaching Threads</a></td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Release Date</td>
+                      <td>Week 5</td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Due Date</td>
+                      <td>Week 6</td>
+                    </tr>
+                  </table>
+                
+                  <table width = "100%" class="mdl-data-table mdl-js-data-table" style = "margin-bottom: 5%">
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Lab</td>
+                      <td><a href="./splendid_synchronization.html">Splendid Synchronization</a></td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Release Date</td>
+                      <td>Week 6</td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Due Date</td>
+                      <td>Week 7</td>
+                    </tr>
+                  </table>
+                
+                  <table width = "100%" class="mdl-data-table mdl-js-data-table" style = "margin-bottom: 5%">
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Lab</td>
+                      <td><a href="./deadlocked_diners.html">Deadlocked Diners</a></td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Release Date</td>
+                      <td>Week 7</td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Due Date</td>
+                      <td>Week 8</td>
+                    </tr>
+                  </table>
+                
+                  <table width = "100%" class="mdl-data-table mdl-js-data-table" style = "margin-bottom: 5%">
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Lab</td>
+                      <td><a href="./ideal_indirection.html">Ideal Indirection</a></td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Release Date</td>
+                      <td>Week 8</td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Due Date</td>
+                      <td>Week 9</td>
+                    </tr>
+                  </table>
+                
+                  <table width = "100%" class="mdl-data-table mdl-js-data-table" style = "margin-bottom: 5%">
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Lab</td>
+                      <td><a href="./pied_piper.html">Pied Piper</a></td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Release Date</td>
+                      <td>Week 9</td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Due Date</td>
+                      <td>Week 11</td>
+                    </tr>
+                  </table>
+                
+                  <table width = "100%" class="mdl-data-table mdl-js-data-table" style = "margin-bottom: 5%">
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Lab</td>
+                      <td><a href="./scheduler.html">Savage Scheduler</a></td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Release Date</td>
+                      <td>Week 11</td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Due Date</td>
+                      <td>Week 12</td>
+                    </tr>
+                  </table>
+                
+                  <table width = "100%" class="mdl-data-table mdl-js-data-table" style = "margin-bottom: 5%">
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Lab</td>
+                      <td><a href="./chatroom.html">Chatroom</a></td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Release Date</td>
+                      <td>Week 12</td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Due Date</td>
+                      <td>Week 13</td>
+                    </tr>
+                  </table>
+                
+                  <table width = "100%" class="mdl-data-table mdl-js-data-table" style = "margin-bottom: 5%">
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Lab</td>
+                      <td><a href="./finding_filesystems.html">Finding Filesystems</a></td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Release Date</td>
+                      <td>Week 13</td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Due Date</td>
+                      <td>Week 14</td>
+                    </tr>
+                  </table>
+                
+                  <table width = "100%" class="mdl-data-table mdl-js-data-table" style = "margin-bottom: 5%">
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Lab</td>
+                      <td><a href="./mad_mad_access_pattern.html">Mad Mad Access Pattern</a></td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Release Date</td>
+                      <td>Week 14</td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Due Date</td>
+                      <td>Week 15</td>
+                    </tr>
+                  </table>
+                
+                  <table width = "100%" class="mdl-data-table mdl-js-data-table" style = "margin-bottom: 5%">
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Lab</td>
+                      <td><a href="./kernal.html">Super Linux Kernel Super Lab</a></td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Release Date</td>
+                      <td>Week 15</td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">Due Date</td>
+                      <td>Week 16</td>
+                    </tr>
+                  </table>
+                
+            	</div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script>
+      $(document).foundation();
+    </script>
+  </body>
+</html>
