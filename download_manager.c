@@ -60,7 +60,8 @@ void * download(void * obj){
     }
     FILE * download_dir = fopen(dir_with_file,"w+");
     CURLcode success;
-    int exit_succ = 0;
+   // int exit_succ = 0;
+   double * total_time = malloc(sizeof(double));
     if(c){
         curl_easy_setopt(c, CURLOPT_URL, url);      // uses the url to retrieve info about the file
         // set to 0L because we don't want our terminal
@@ -76,15 +77,15 @@ void * download(void * obj){
         // by download_dir
         success = curl_easy_perform(c);                         
         if(success == CURLE_OK){
-                double total_time = 0;
+                
                 // retrieves the total number of seconds it took
                 // for the file to get downloaded
-                success = curl_easy_getinfo(c, CURLINFO_TOTAL_TIME, &total_time);    
-                printf("Total seconds : %f\n", total_time);
+                success = curl_easy_getinfo(c, CURLINFO_TOTAL_TIME, total_time);    
+                printf("Total seconds : %f\n", *total_time);
                 // send_to_socket(total_time)
                 // TODO: write a function that sends to the socket
                 // how many seconds it took for the file to get downloaded
-                exit_succ = 1;
+                //  exit_succ = 1;
         }else{
             perror("Sorry, your file could not be downloaded...\n");
         }
@@ -93,9 +94,7 @@ void * download(void * obj){
         perror("Oops...Something went wrong. Please try again.\n");
     }
     fclose(download_dir);
-    if(exit_succ)
-        return (void*)1;
-    else return (void*)-1;
+    return (void*)total_time;
 }
 
 /*
@@ -108,7 +107,7 @@ void * download(void * obj){
 *            Each element of any array in a given index maps
 *            to the elements in the other arrays at the same index
 */
-void download_wrapper(char * *dir, char ** url, char ** times){
+double * *download_wrapper(char * *dir, char ** url, char ** times){
     
     int idx = 0;
     pthread_t threads[1024];
@@ -119,13 +118,18 @@ void download_wrapper(char * *dir, char ** url, char ** times){
         pthread_create(&threads[idx],NULL,download,(void*)&files[idx]);
         idx++;
     }
+    // contains the time taken for each file 
+    // to get downloded. 
+    double * * download_time = malloc(sizeof(double*)*(idx+1));   
+    download_time[idx] = NULL; 
     idx = idx-1;
-    void * ret;
+    void * ret = malloc(sizeof(double));
     while(idx>=0){
-        pthread_join(threads[idx],&ret);
-        idx--;
+        pthread_join(threads[idx],&download_time[idx]);
+        printf("%lf\n", *download_time[idx]);
+       idx--;
     }
-
+    return download_time;
 } 
 
 

@@ -15,8 +15,7 @@
 #include <dirent.h>
  
 void * download(void * obj);
-
-void download_wrapper(char * dir[], char * url[], char** times);
+double ** download_wrapper(char * dir[], char * url[], char** times);
 
 void check_for_updates(char * url, long prev_mod, char * download_dir);
 

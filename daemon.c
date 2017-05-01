@@ -71,6 +71,34 @@ char*** parse_string(char * c){
 	
 }
 /*
+	download_durations is a NULL terminated array of double
+	pointers containing the time taken for each download operation.
+	Each double is followed by a new line character ('\n').
+*/
+
+void send_download_duration(int sock_fd,double ** download_durations){
+	int i = 0;
+	size_t bytes_written = 0;
+	int w = 0;
+	while(download_durations[i]){
+		while(1){
+			w = write(sock_fd,download_durations[i],sizeof(double));
+			if(w < 0){
+				return;
+			}
+			if(w > 0)
+				bytes_written+=w;
+			if(bytes_written==sizeof(double)){
+				write(sock_fd,"\n",1);
+				goto next_;
+			}
+		}
+		next_:
+		i++;
+	}
+}
+
+/*
 	Forks a daemon process that takes in download requests from the 
 	user.
 	We assume that the string written to the socket will be no longer
@@ -149,7 +177,12 @@ int download_server(){
 			array_urls = info[0];
 			array_folders = info[1];
 			array_times = info[2];
-			download_wrapper(array_folders,array_urls,array_times);
+			// array containing the times taken for each download operation
+			double ** download_durations = download_wrapper(array_folders,array_urls,array_times);
+			// send the durations back to the GUI
+			// so that it can we displayed to the
+			// user
+			send_download_duration(is_accepted,download_durations);
 			if(is_accepted < 0){
 				perror("The file can not be downloaded.\n");
 				perror("error code: accept() failed\n");
