@@ -1,7 +1,18 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-char*** copy_string(FILE *input){
+char*** copy_string(char * c){
+	int total = 0;
+	sscanf(c,"%d\t",&total);
+	char ** url[total];
+	char ** dir[total];
+	long ** time_modified[total];
+	sscanf(c,"%d\t%s\n%s\n%lu",&total,url[0],dir[0],time_modified[0])
+	int idx = 0;
+	while(idx < total){
+		sscanf(c,"")
+	}
+
 	char * line = malloc(256);
 	size_t size;
 	char * init_pos;
@@ -10,7 +21,6 @@ char*** copy_string(FILE *input){
 	char ** third = malloc(sizeof(char*)*1024);
 	int count = 0;
 	while(getline(&line,&size,input)>-1){
-
 		init_pos = line;
 		char * tab = strchr(line,'\t');
 		if(!tab) break;
@@ -26,7 +36,6 @@ char*** copy_string(FILE *input){
 		url[n_line-line] = '\0';
 		second[count] = url;
 		line = init_pos;
-
 		getline(&line,&size,input);
 		n_line = strchr(line,'\n');
 		char * dir = malloc(n_line-line+1);
@@ -36,10 +45,6 @@ char*** copy_string(FILE *input){
 		line = init_pos;
 		getline(&line,&size,input);
 		getline(&line,&size,input);
-
-		//
-		// numberofinputs\t<url>\ntime modified\ndirectory\n
-
 		count++;
 	}
 

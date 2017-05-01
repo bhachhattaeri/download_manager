@@ -110,7 +110,32 @@ int allocate_memory(char **first, char **second, char **third, int num){
 }
 
 char* copy_next_string(FILE *input){
+	char * line = malloc(256);
+	size_t size;
+	char * init_pos;
+	while(getline(&line,&size,input)>0){
+		init_pos = line;
+		char * tab = strchr(line,'\t');
+		char * no_of_files = malloc(tab-line+1);
+		strncpy(no_of_files,line,tab-line);
+		no_of_files[tab-line] = '\0';
+		line+=(line-tab)+1;
+		char * n_line = strchr(line,'\n');
+		char * url = malloc(n_line-line+1);
+		strncpy(url,line,n_line-line);
+		url[n_line-line] = '\0';
+		line = init_pos;
+		getline(&line,&size,input);
+		n_line = strchr(line,'\n');
+		char * dir = malloc(n_line-line+1);
+		strncpy(dir,line,n_line-line);
+		dir[n_line-line] = '\0';
+	}
+
+
+		char * url_no_of_file = malloc(1024);
 						char temp[256];
+						
 						int count = 0;
 						int c = fgetc(input);
 
@@ -134,7 +159,7 @@ char* copy_next_string(FILE *input){
 						return t;
 }
 
-int extract_information(char **first, char **second, char **third, FILE *input){
+int extract_information(char ***first, char ***second, char ***third, FILE *input){
 					int count = 0;
 					int c = 0;
 					int  num_request = 0;
@@ -149,29 +174,39 @@ int extract_information(char **first, char **second, char **third, FILE *input){
 						return -1;
 					}
 
-					int mem = allocate_memory(first, second, third, num_request);
-					int f_count, s_count, t_count, total = 0;
-
+					*first = malloc(sizeof(char*) * 1024);
+					*second = malloc(sizeof(char*) * 1024);
+					*third =  malloc(sizeof(char*) * 1024);					
+					int f_count =0 , s_count = 0, t_count = 0, total = 0;
+					printf("First is %p\n",*first );
+					fseek(input,0,SEEK_SET);
 					//I assumed that urls or folder_name or timestap won't be of more than 256 bytes length
-					while((c = fgetc(input)) != EOF){
+
+					do{
 						char *t = copy_next_string(input);
 						
 						if(total%2 == 0){
-							first[s_count++] = t;
+							printf("About to copy to first %s\n", t);
+							(*first)[s_count] = t;
+							s_count++;
 						}
 						else if(total%3 == 0){
-							second[t_count++] = t;
+							printf("About to copy to second\n");
+							(*second)[t_count] = t;
+							t_count++;
 						}
 						else{
-							third[f_count++] = t;
+							printf("About to copy to third %s\n",t);
+							(*third)[f_count] = t;
+							f_count++;
 						}//else-if
 						
 						total++;
-					}//while ends
-
-					first[f_count] = NULL;
-					second[s_count] = NULL;
-					third[t_count] = NULL;
+					}while((c = fgetc(input)) != EOF);//while ends
+					printf("The val of total is %d\n",total );
+					(*first)[f_count] = NULL;
+					(*second)[s_count] = NULL;
+					(*third)[t_count] = NULL;
 					
 					return num_request;
 }
