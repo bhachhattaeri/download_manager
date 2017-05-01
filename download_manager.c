@@ -36,6 +36,7 @@ int dir_exits(char * dir){
     return 1;
 }
 
+
 /* Accepts a download_obj type, which consists of
 *  an url and a download directory.
 *  If download is successfully performed, returns (void*)1
@@ -47,33 +48,39 @@ void * download(void * obj){
     char * url = file->url;
     CURL * c;
     curl_global_init(CURL_GLOBAL_DEFAULT);    //sets up the required environment variables
-    c = curl_easy_init();
+    c = curl_easy_init();                     // initalize the curl object
     char * file_name = get_filename(url); 
     char dir_with_file[strlen(file_name)+strlen(dir)+1];
     strcpy(dir_with_file,dir);
     strcat(dir_with_file,file_name);
     if(!dir_exits(dir)){
-        mkdir(dir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);  // if directory doesn't exits create with
-                                                            // read/write/execute permissions
+        // if directory doesn't exits create with
+        // read/write/execute permissions
+        mkdir(dir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);  
     }
     FILE * download_dir = fopen(dir_with_file,"w+");
     CURLcode success;
     int exit_succ = 0;
     if(c){
         curl_easy_setopt(c, CURLOPT_URL, url);      // uses the url to retrieve info about the file
-        curl_easy_setopt(c, CURLOPT_VERBOSE, 1);    // provides meaningful message to the user
+        // set to 0L because we don't want our terminal
+        // to be flooded with garbage info that we don't want
+        curl_easy_setopt(c, CURLOPT_VERBOSE, 0L);    // provides meaningful message to the user
         curl_easy_setopt(c, CURLOPT_WRITEDATA, download_dir);   // write the retrieved file (from the url) to down_dir 
-       // curl_easy_setopt(c, CURLOPT_NOPROGRESS, 0L);
-       // curl_easy_setopt(c, CURLOPT_PROGRESSFUNCTION, my_progress_func);                                                       // in that location
+        //curl_easy_setopt(c, CURLOPT_NOPROGRESS, 0L);
+
+        //curl_easy_setopt(c, CURLOPT_PROGRESSFUNCTION, my_progress_func);                                                       // in that location
         success = curl_easy_perform(c);                         
         if(success == CURLE_OK){
-                int total_time = 0;
-                success = curl_easy_getinfo(c, CURLINFO_TOTAL_TIME, total_time);    // retrieves the information
-                if(success == CURLE_OK){
-                    int minutes = (total_time/60);
-                    int seconds = total_time % 60;
-                }
-            exit_succ = 1;
+                double total_time = 0;
+                // retrieves the total number of seconds it took
+                // for the file to get downloaded
+                success = curl_easy_getinfo(c, CURLINFO_TOTAL_TIME, &total_time);    
+                printf("Total seconds : %f\n", total_time);
+                // send_to_socket(total_time)
+                // TODO: write a function that sends to the socket
+                // how many seconds it took for the file to get downloaded
+                exit_succ = 1;
         }else{
             perror("Sorry, your file could not be downloaded...\n");
         }

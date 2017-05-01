@@ -1,4 +1,4 @@
-all: daemon userinput
+all: daemon userinput gui
 
 daemon: daemon.o download_manager.o
 	gcc daemon.o download_manager.o -o daemon -lcurl -pthread
