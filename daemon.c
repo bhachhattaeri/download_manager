@@ -11,8 +11,8 @@
 #include <netinet/in.h>
 #include <errno.h>
 #include "download_manager.h"
-//#include "extract_test.c"
 #define _GNU_SOURCE
+
 /*
 	Parses URL, download directory and time modified from the 
 	given string.
@@ -156,7 +156,6 @@ int download_server(){
 				exit(EXIT_FAILURE);
 			}
 			is_accepted = accept(server_sock, (struct sockaddr*)&incoming, &addr_len);
-
 	  	}
 		close(server_sock);
 	}		

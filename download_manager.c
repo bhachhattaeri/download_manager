@@ -60,17 +60,18 @@ void * download(void * obj){
     CURLcode success;
     int exit_succ = 0;
     if(c){
-        curl_easy_setopt(c, CURLOPT_URL, url);      // uses the url to retrieve info
+        curl_easy_setopt(c, CURLOPT_URL, url);      // uses the url to retrieve info about the file
         curl_easy_setopt(c, CURLOPT_VERBOSE, 1);    // provides meaningful message to the user
-        curl_easy_setopt(c, CURLOPT_WRITEDATA, download_dir);   // store the retrieved file (from the url) 
-        success = curl_easy_perform(c);                         // in that location
+        curl_easy_setopt(c, CURLOPT_WRITEDATA, download_dir);   // write the retrieved file (from the url) to down_dir 
+       // curl_easy_setopt(c, CURLOPT_NOPROGRESS, 0L);
+       // curl_easy_setopt(c, CURLOPT_PROGRESSFUNCTION, my_progress_func);                                                       // in that location
+        success = curl_easy_perform(c);                         
         if(success == CURLE_OK){
                 int total_time = 0;
                 success = curl_easy_getinfo(c, CURLINFO_TOTAL_TIME, total_time);    // retrieves the information
                 if(success == CURLE_OK){
                     int minutes = (total_time/60);
                     int seconds = total_time % 60;
-                    printf("Total time: %d:%d\n",minutes,seconds);
                 }
             exit_succ = 1;
         }else{
@@ -138,7 +139,6 @@ void check_for_updates(char * url, long prev_mod, char * download_dir){
          download_obj obj;
          obj.url = strdup(url);
          obj.dir = strdup(download_dir);
-
          download(&obj);            // the file has been updated since, so download new copy
       }else{
          fprintf(stdout, "The file is up-to-date!\n");
