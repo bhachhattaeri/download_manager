@@ -70,6 +70,10 @@ void * download(void * obj){
         //curl_easy_setopt(c, CURLOPT_NOPROGRESS, 0L);
 
         //curl_easy_setopt(c, CURLOPT_PROGRESSFUNCTION, my_progress_func);                                                       // in that location
+
+        // starts 'performing' the action, i.e. actually starts downloading
+        // from the provied url and writes the info to the file specified
+        // by download_dir
         success = curl_easy_perform(c);                         
         if(success == CURLE_OK){
                 double total_time = 0;
