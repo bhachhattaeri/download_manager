@@ -14,12 +14,12 @@ static int maximumNumberOfUrls = INITIAL_URL_SIZE;
 static int sockfd;
 static int isSocketInitialized = 0;
 static struct sockaddr_in servaddr;
-
+static int notGui = 0;
 
 // uncomment to run without gui
-
-/*int main(int argc, char** argv) {
-
+/*
+int main(int argc, char** argv) {
+  notGui = 1;
   if(argc <= 1) {
     print_help();
     exit(1);
@@ -296,7 +296,13 @@ void callDaemonToDownload(char* url, char* dir, char* time) {
   printf("Line: %s\n",sendLine );
   write(sockfd, sendLine, strlen(sendLine)+1);
 
-  shutdown(sockfd, 2);
+  shutdown(sockfd, SHUT_WR);
+  if(notGui) {
+    char buffer[1024];
+    memset(buffer, 0, 1024);
+    int ret = read(sockfd, buffer, 1024);
+    printf("%s\n", buffer);
+  }
   close(sockfd);
 }
 

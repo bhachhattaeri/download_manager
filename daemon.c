@@ -96,6 +96,7 @@ void send_download_duration(int sock_fd,double ** download_durations){
 		next_:
 		i++;
 	}
+  shutdown(sock_fd, SHUT_WR);
 }
 
 /*

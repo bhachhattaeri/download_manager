@@ -26,21 +26,18 @@ static void start_download(GtkWidget *widget, gpointer data) {
     strcat(actual_folder, "/");
 //    printf("Folder: %s\n", folder);
     if(folder == NULL) {
-      printf("Folder: %s\n", folder);
-      
       char* temporary = getDirectoryFromUrl(url);
       strcpy(actual_folder, temporary);
     } else {
 
     }
     char* time = "";
-    printf("Downloading %s\n", url);
     char* copyUrl = strdup(url);
     callDaemonToDownload(url, actual_folder, time);
   }
   
   if(filename != NULL) {
-//    downloadFromFile(filename);
+    downloadFromFile(filename);
   }
 
 }
@@ -69,7 +66,9 @@ static void open_dialog(GtkWidget *widget, gpointer data) {
 }
 
 static void choose_folder(GtkWidget *widget, gpointer data) {
-  GtkWidget *dialog = gtk_file_chooser_dialog_new("Choose Folder", NULL, GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+  GtkWidget *dialog = gtk_file_chooser_dialog_new("Choose Folder", NULL,
+ GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+ GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
 
   gint res = gtk_dialog_run(GTK_DIALOG(dialog));
 
@@ -88,8 +87,6 @@ static void choose_folder(GtkWidget *widget, gpointer data) {
 }
 
 static void activate(GtkApplication *app, gpointer user_data) {
-//  GtkWidget *window;
-//  GtkWidget *label;
   GtkWidget *button;
 
   window = gtk_application_window_new(app);
@@ -105,17 +102,11 @@ static void activate(GtkApplication *app, gpointer user_data) {
   button = gtk_button_new_with_label ("Choose file");
   g_signal_connect (button, "clicked", G_CALLBACK (open_dialog), NULL);
 
-  /* Place the first button in the grid cell (0, 0), and make it fill
-   * just 1 cell horizontally and vertically (ie no spanning)
-   */
   gtk_grid_attach (GTK_GRID (grid), button, 0, 0, 1, 1);
 
   button = gtk_button_new_with_label ("Output Destination");
   g_signal_connect (button, "clicked", G_CALLBACK (choose_folder), NULL);
 
-  /* Place the second button in the grid cell (1, 0), and make it fill
-   * just 1 cell horizontally and vertically (ie no spanning)
-   */
   gtk_grid_attach (GTK_GRID (grid), button, 1, 0, 1, 1);
 
   label = gtk_label_new(NULL);
@@ -133,9 +124,6 @@ static void activate(GtkApplication *app, gpointer user_data) {
   button = gtk_button_new_with_label ("Download");
   g_signal_connect_swapped (button, "clicked", G_CALLBACK (start_download), window);
 
-  /* Place the Quit button in the grid cell (0, 1), and make it
-   * span 2 columns.
-   */
   gtk_grid_attach (GTK_GRID (grid), button, 0, 4, 2, 1);
 
   button = gtk_button_new_with_label("Update");
@@ -146,11 +134,6 @@ static void activate(GtkApplication *app, gpointer user_data) {
   gtk_label_set_markup(GTK_LABEL(downloading_label), "");
   gtk_grid_attach(GTK_GRID(grid), downloading_label, 0, 6, 2, 1);
 
-  /* Now that we are done packing our widgets, we show them all
-   * in one go, by calling gtk_widget_show_all() on the window.
-   * This call recursively calls gtk_widget_show() on all widgets
-   * that are contained in the window, directly or indirectly.
-   */
   gtk_widget_show_all (window); 
 }
 
