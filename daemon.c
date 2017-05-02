@@ -33,7 +33,7 @@
 char*** parse_string(char * c){
 	int total = 0;
 	sscanf(c,"%d\t",&total);		// get the total number of files
-	printf("Bytes: %d\n",total );
+	//printf("Bytes: %d\n",total );
 	char * * url = malloc(sizeof(char*)*total);
 	char * * dir = malloc(sizeof(char*)*total);
 	char * * time_modified = malloc(sizeof(char*)*total);
@@ -81,6 +81,7 @@ void send_download_duration(int sock_fd,double ** download_durations){
 	size_t bytes_written = 0;
 	int w = 0;
 	while(download_durations[i]){
+		//printf("download_wrapper: %lf\n",*download_durations[i] );
 		while(1){
 			w = write(sock_fd,download_durations[i],sizeof(double));
 			if(w < 0){
@@ -96,7 +97,11 @@ void send_download_duration(int sock_fd,double ** download_durations){
 		next_:
 		i++;
 	}
+<<<<<<< Updated upstream
   shutdown(sock_fd, SHUT_WR);
+=======
+	shutdown(sock_fd,SHUT_WR);
+>>>>>>> Stashed changes
 }
 
 /*
