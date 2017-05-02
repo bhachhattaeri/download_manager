@@ -81,7 +81,7 @@ void * download(void * obj){
                 // retrieves the total number of seconds it took
                 // for the file to get downloaded
                 success = curl_easy_getinfo(c, CURLINFO_TOTAL_TIME, total_time);    
-                printf("Total seconds : %f\n", *total_time);
+               // printf("Total seconds : %f\n", *total_time);
                 // send_to_socket(total_time)
                 // TODO: write a function that sends to the socket
                 // how many seconds it took for the file to get downloaded
@@ -126,7 +126,7 @@ double * *download_wrapper(char * *dir, char ** url, char ** times){
     void * ret = malloc(sizeof(double));
     while(idx>=0){
         pthread_join(threads[idx],&download_time[idx]);
-        printf("%lf\n", *download_time[idx]);
+        //printf("%lf\n", *download_time[idx]);
        idx--;
     }
     return download_time;
