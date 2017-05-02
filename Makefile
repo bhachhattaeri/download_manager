@@ -19,6 +19,7 @@ clean:
 	rm *o hello
 
 install: startup.sh
+	cp ./daemon /usr/bin/DownloadManager
 	cp startup.sh /etc/init.d/DownloadManager
 	chmod +x /etc/init.d/DownloadManager
 	chown root:root /etc/init.d/DownloadManager
