@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
+#include <pthread.h>
 #include "userinput.h"
 
 static GtkWidget *window;
@@ -13,12 +14,37 @@ char* filename = NULL;
 char* folder = NULL;
 char* url = NULL;
 
+int numberOfThreads = 0;
+int maxNumber = 5;
+pthread_t * arrayOfThreads = NULL;
+
+int downloading = 0;
+
+typedef struct infoStruct {
+  char* url;
+  char* actual_folder;
+  char* time;
+} info;
+
+void *downloadingThread(void * ptr) {
+  info* in = (info*) ptr;
+  callDaemonToDownload(in->url, in->actual_folder, in->time);
+  free(in);
+
+  if(filename != NULL) {
+    downloadFromFile(filename);
+  }
+
+  return NULL;
+}
+
 static void start_update(GtkWidget *widget, gpointer data) {
   run_program("-u", "notUsed");  
 }
 
 static void start_download(GtkWidget *widget, gpointer data) {
   url = gtk_entry_get_text(GTK_ENTRY(urlEntry));
+  int initialDownloading = downloading;
 
   if(url != NULL) {
     char actual_folder[200];
@@ -33,14 +59,48 @@ static void start_download(GtkWidget *widget, gpointer data) {
     }
     char* time = "";
     char* copyUrl = strdup(url);
-    callDaemonToDownload(url, actual_folder, time);
-  }
-  
-  if(filename != NULL) {
-    downloadFromFile(filename);
-  }
+    info* in = calloc(sizeof(in), 1);
+    in->url = url;
+    in->actual_folder = actual_folder;
+    in->time = time;
+    if(numberOfThreads==maxNumber) {
+      maxNumber *= 2;
+      arrayOfThreads = realloc(arrayOfThreads, sizeof(pthread_t) * maxNumber);
+    }
+    pthread_create(&arrayOfThreads[numberOfThreads], NULL, downloadingThread, in);
+    numberOfThreads++;
+  }  
 
 }
+
+gint delete_event( GtkWidget *widget,
+                   GdkEvent  *event,
+                   gpointer   data )
+{
+    /* If you return FALSE in the "delete_event" signal handler,
+     * GTK will emit the "destroy" signal. Returning TRUE means
+     * you don't want the window to be destroyed.
+     * This is useful for popping up 'are you sure you want to quit?'
+     * type dialogs. */
+
+    for(int i = 0; i < numberOfThreads; i++) {
+      void* result;
+      pthread_join(arrayOfThreads[i], &result);
+    }
+
+    /* Change TRUE to FALSE and the main window will be destroyed with
+     * a "delete_event". */
+
+    return FALSE;
+}
+
+/* Another callback */
+void destroy( GtkWidget *widget,
+              gpointer   data )
+{
+    gtk_main_quit();
+}
+
 
 static void open_dialog(GtkWidget *widget, gpointer data) {
   GtkWidget *dialog = gtk_file_chooser_dialog_new("Open File", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
@@ -92,7 +152,8 @@ static void activate(GtkApplication *app, gpointer user_data) {
   window = gtk_application_window_new(app);
   gtk_window_set_title(GTK_WINDOW(window), "Window");
   gtk_container_set_border_width (GTK_CONTAINER (window), 10);
-
+  g_signal_connect(window, "delete_event", G_CALLBACK(delete_event), NULL);
+  g_signal_connect(window, "destroy", G_CALLBACK(destroy), NULL);
   /* Here we construct the container that is going pack our buttons */
   grid = gtk_grid_new ();
 
@@ -145,6 +206,7 @@ main (int    argc,
   int status;
   
   initialize();
+  arrayOfThreads = malloc(sizeof(pthread_t) * 5);
 
   app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
   g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);

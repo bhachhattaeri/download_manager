@@ -1,4 +1,4 @@
-all: daemon gui userinput
+all: daemon userinput gui
 
 daemon: daemon.o download_manager.o
 	gcc daemon.o download_manager.o -o daemon -lcurl -pthread
@@ -10,10 +10,10 @@ daemon.o: daemon.c
 	gcc -c daemon.c
 
 gui: gui.c userinput.c
-	gcc `pkg-config --cflags gtk+-3.0` -o gui gui.c userinput.c `pkg-config --libs gtk+-3.0`
+	gcc `pkg-config --cflags gtk+-3.0` -o gui gui.c userinput.c `pkg-config --libs gtk+-3.0` -pthread
 
 userinput: userinputMain.c userinput.c userinput.h
-	gcc -o input userinputMain.c userinput.c userinput.h
+	gcc -o userinput userinputMain.c userinput.c userinput.h
 
 clean:
 	rm *o hello
