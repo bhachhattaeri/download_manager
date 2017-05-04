@@ -3,7 +3,7 @@
 #define FILE_TYPES (3)
 #define INITIAL_URL_SIZE (4)
 
-static int custom = 0;
+int custom = 0;
 static char** fileTypes;
 static char** directories;
 static char** urls;
@@ -14,46 +14,9 @@ static int maximumNumberOfUrls = INITIAL_URL_SIZE;
 static int sockfd;
 static int isSocketInitialized = 0;
 static struct sockaddr_in servaddr;
-static int notGui = 0;
+int notGui = 0;
 
 // uncomment to run without gui
-/*
-int main(int argc, char** argv) {
-  notGui = 1;
-  if(argc <= 1) {
-    print_help();
-    exit(1);
-  }
-   //   printf("Here\n" );
-
-  initialize();
-     // printf("Here\n" );
-
-  int counter = 1;
-
-  while(counter < argc) {
-    if(strcmp(argv[counter], "-c")==0) { // if custom
-      custom = 1;
-      if(setOptions(1)==-1) { //error finding config file
-        exit(1);
-      }
-      break;
-    }
-    counter++;
-  }
-
-  counter = 1;
-  while(counter < argc) {
-    if(argv[counter][0]=='-') { //if is flag
-      //printf("%s\n",argv[counter] );
-      run_program(argv[counter], argv[counter+1]);
-    }
-    counter++;
-  }
-
-  return 0;
-} 
-*/
 void initialize() {
   fileTypes = malloc(sizeof(char*) * (FILE_TYPES + 1));
   directories = malloc(sizeof(char*) * (FILE_TYPES + 1));
@@ -298,10 +261,10 @@ void callDaemonToDownload(char* url, char* dir, char* time) {
 
   shutdown(sockfd, SHUT_WR);
   if(notGui) {
-    char buffer[1024];
-    memset(buffer, 0, 1024);
-    int ret = read(sockfd, buffer, 1024);
-    printf("%s\n", buffer);
+    double buffer;
+    int ret = read(sockfd, (char*)&buffer, sizeof(double));
+    printf("Time taken: %lf\n", buffer);
+    printf("Completed\n");
   }
   close(sockfd);
 }

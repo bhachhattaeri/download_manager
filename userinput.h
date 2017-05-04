@@ -1,4 +1,4 @@
-	#pragma once
+#pragma once
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -10,6 +10,9 @@
 #include <assert.h>
 #include <ctype.h>
 #include <time.h>
+
+extern int custom;
+extern int notGui;
 
 void storeCustomDestinations(char* line);
 

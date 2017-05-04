@@ -44,20 +44,24 @@ function toggleAll() {
 // Download all visible checked links.
 function downloadCheckedLinks() {
   var ws = new WebSocket("ws://localhost:1234/");
+  console.log("In download checked links");
   var checkedNumber = 0;
   for (var i = 0; i < visibleLinks.length; ++i) {
     if (document.getElementById('check' + i).checked) {
+        console.log("Found a checked link");
         checkedNumber++;
     }
   }
   var sendingString = "" + checkedNumber + "\t";
+  console.log("trying to send");
   for (var i = 0; i < visibleLinks.length; ++i) {
     if (document.getElementById('check' + i).checked) {
+      console.log("sending this url " + visibleLinks[i]);
       var url = visibleLinks[i];
       sendingString += (url + "\n");
       sendingString += (getDirectoryFromUrl(url) + "\n");
       sendingString += "\n";
-      sendingString += "\t"
+      sendingString += "\t";
     }
   }
     

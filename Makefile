@@ -1,4 +1,4 @@
-all: daemon gui userinput
+all: daemon userinput gui
 
 daemon: daemon.o download_manager.o
 	gcc daemon.o download_manager.o -o daemon -lcurl -pthread
@@ -10,15 +10,21 @@ daemon.o: download_manager.o daemon.c
 	gcc -c daemon.c
 
 gui: gui.c userinput.c
-	gcc `pkg-config --cflags gtk+-3.0` -o gui gui.c userinput.c `pkg-config --libs gtk+-3.0`
+	gcc `pkg-config --cflags gtk+-3.0` -o gui gui.c userinput.c `pkg-config --libs gtk+-3.0` -pthread
 
+<<<<<<< HEAD
 userinput: userinput.c userinput.h
 	gcc -o input userinput.c userinput.h
+=======
+userinput: userinputMain.c userinput.c userinput.h
+	gcc -o userinput userinputMain.c userinput.c userinput.h
+>>>>>>> origin/master
 
 clean:
 	rm *o hello
 
 install: startup.sh
+	cp ./daemon /usr/bin/DownloadManager
 	cp startup.sh /etc/init.d/DownloadManager
 	chmod +x /etc/init.d/DownloadManager
 	chown root:root /etc/init.d/DownloadManager

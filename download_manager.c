@@ -1,6 +1,4 @@
-
 #include "download_manager.h"
-
 
 typedef struct download_obj{
   char * url;
