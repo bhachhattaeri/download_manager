@@ -12,14 +12,6 @@ daemon.o: download_manager.o daemon.c
 gui: gui.c userinput.c
 	gcc `pkg-config --cflags gtk+-3.0` -o gui gui.c userinput.c `pkg-config --libs gtk+-3.0` -pthread
 
-<<<<<<< HEAD
-userinput: userinput.c userinput.h
-	gcc -o input userinput.c userinput.h
-=======
-userinput: userinputMain.c userinput.c userinput.h
-	gcc -o userinput userinputMain.c userinput.c userinput.h
->>>>>>> origin/master
-
 clean:
 	rm *o hello
 
