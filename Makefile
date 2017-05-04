@@ -6,14 +6,14 @@ daemon: daemon.o download_manager.o
 download_manager.o: download_manager.c download_manager.h
 	gcc -c download_manager.c -pthread
 
-daemon.o: daemon.c
+daemon.o: download_manager.o daemon.c
 	gcc -c daemon.c
 
 gui: gui.c userinput.c
 	gcc `pkg-config --cflags gtk+-3.0` -o gui gui.c userinput.c `pkg-config --libs gtk+-3.0`
 
-userinput: userinputMain.c userinput.c userinput.h
-	gcc -o input userinputMain.c userinput.c userinput.h
+userinput: userinput.c userinput.h
+	gcc -o input userinput.c userinput.h
 
 clean:
 	rm *o hello
