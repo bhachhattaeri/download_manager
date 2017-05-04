@@ -68,30 +68,21 @@ void * download(void * obj){
         // to be flooded with garbage info that we don't want
         curl_easy_setopt(c, CURLOPT_VERBOSE, 0L);    // provides meaningful message to the user
         curl_easy_setopt(c, CURLOPT_WRITEDATA, download_dir);   // write the retrieved file (from the url) to down_dir 
-        //curl_easy_setopt(c, CURLOPT_NOPROGRESS, 0L);
-
-        //curl_easy_setopt(c, CURLOPT_PROGRESSFUNCTION, my_progress_func);                                                       // in that location
 
         // starts 'performing' the action, i.e. actually starts downloading
         // from the provied url and writes the info to the file specified
         // by download_dir
         success = curl_easy_perform(c);                         
         if(success == CURLE_OK){
-                
-                // retrieves the total number of seconds it took
-                // for the file to get downloaded
-                success = curl_easy_getinfo(c, CURLINFO_TOTAL_TIME, total_time);    
-               // printf("Total seconds : %f\n", *total_time);
-                // send_to_socket(total_time)
-                // TODO: write a function that sends to the socket
-                // how many seconds it took for the file to get downloaded
-                //  exit_succ = 1;
+            // retrieves the total number of seconds it took
+            // for the file to get downloaded
+            success = curl_easy_getinfo(c, CURLINFO_TOTAL_TIME, total_time);    
         }else{
-            perror("Sorry, your file could not be downloaded...\n");
-        }
+            *total_time = -1;     // signifies error while downloading
+        }                         // when socket sees -1, it will print the error message
         curl_easy_cleanup(c);
     }else {
-        perror("Oops...Something went wrong. Please try again.\n");
+        *total_time = -1;
     }
     fclose(download_dir);
     return (void*)total_time;
@@ -125,8 +116,7 @@ double * *download_wrapper(char * *dir, char ** url, char ** times){
     idx = idx-1;
     void * ret = malloc(sizeof(double));
     while(idx>=0){
-        pthread_join(threads[idx],&download_time[idx]);
-        //printf("%lf\n", *download_time[idx]);
+       pthread_join(threads[idx],&download_time[idx]);
        idx--;
     }
     return download_time;
@@ -134,11 +124,11 @@ double * *download_wrapper(char * *dir, char ** url, char ** times){
 
 
 void check_for_updates(char * url, long prev_mod, char * download_dir){
-  CURL * curl;
-  curl_global_init(CURL_GLOBAL_DEFAULT);    //sets up the required environment variables
-  curl = curl_easy_init();
-  curl_easy_setopt(curl, CURLOPT_URL, url); 
-  curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);     // don't get us the download file - we just need to know modification time
+    CURL * curl;
+    curl_global_init(CURL_GLOBAL_DEFAULT);    //sets up the required environment variables
+    curl = curl_easy_init();
+    curl_easy_setopt(curl, CURLOPT_URL, url); 
+    curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);     // don't get us the download file - we just need to know modification time
     curl_easy_setopt(curl, CURLOPT_FILETIME, 1L);
     CURLcode curl_success = curl_easy_perform(curl);  
     long time = 0;
