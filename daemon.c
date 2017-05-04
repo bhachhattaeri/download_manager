@@ -97,11 +97,7 @@ void send_download_duration(int sock_fd,double ** download_durations){
 		next_:
 		i++;
 	}
-<<<<<<< Updated upstream
-  shutdown(sock_fd, SHUT_WR);
-=======
 	shutdown(sock_fd,SHUT_WR);
->>>>>>> Stashed changes
 }
 
 /*
