@@ -8,4 +8,9 @@ Features <br/>
   •Command line input and GUI</br>
   •Stores according to the file type (i.e. pdfs go to one folder, .jpegs go to another and so on)</br>
   •Takes requests from a file
+  
+ #Mac<br/>
+ Users are required to install gtk and liburl
+ GTK => brew install gtk
+ libcurl => https://curl.haxx.se/download.html explains how to get libcurl on your machine
 
