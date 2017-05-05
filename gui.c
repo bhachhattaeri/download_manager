@@ -29,6 +29,8 @@ typedef struct infoStruct {
 void *downloadingThread(void * ptr) {
   info* in = (info*) ptr;
   callDaemonToDownload(in->url, in->actual_folder, in->time);
+  free(in->actual_folder);
+  free(in->time);
   free(in);
 
   if(filename != NULL) {
@@ -47,22 +49,25 @@ static void start_download(GtkWidget *widget, gpointer data) {
   int initialDownloading = downloading;
 
   if(url != NULL) {
-    char actual_folder[200];
-    strcpy(actual_folder, folder);
-    strcat(actual_folder, "/");
+    char* actual_folder = calloc(200, 1);
 //    printf("Folder: %s\n", folder);
     if(folder == NULL) {
+      printf("Null\n");
       char* temporary = getDirectoryFromUrl(url);
       strcpy(actual_folder, temporary);
+//      strcat(actual_folder, "/");
     } else {
-
+      printf("Not null\n");
+      strcpy(actual_folder, folder);
+      strcat(actual_folder, "/");
     }
     char* time = "";
     char* copyUrl = strdup(url);
-    info* in = calloc(sizeof(in), 1);
+    info* in = calloc(sizeof(info), 1);
     in->url = url;
     in->actual_folder = actual_folder;
-    in->time = time;
+    in->time = calloc(1, 1);
+    *(in->time) = '\0';
     if(numberOfThreads==maxNumber) {
       maxNumber *= 2;
       arrayOfThreads = realloc(arrayOfThreads, sizeof(pthread_t) * maxNumber);
@@ -150,7 +155,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
   GtkWidget *button;
 
   window = gtk_application_window_new(app);
-  gtk_window_set_title(GTK_WINDOW(window), "Download Manager");
+  gtk_window_set_title(GTK_WINDOW(window), "Window");
   gtk_container_set_border_width (GTK_CONTAINER (window), 10);
   g_signal_connect(window, "delete_event", G_CALLBACK(delete_event), NULL);
   g_signal_connect(window, "destroy", G_CALLBACK(destroy), NULL);
