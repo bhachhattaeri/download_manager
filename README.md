@@ -13,3 +13,6 @@ Features <br/>
  Users are required to install gtk and liburl
  GTK => brew install gtk. Alternatively, for linux users, sudo apt-get install libgtk-3-dev
  libcurl => https://curl.haxx.se/download.html explains how to get libcurl on your machine
+ 
+ sudo make install to compile
+ If the daemon process is unable to run due to different machine settings, type ./daemon
